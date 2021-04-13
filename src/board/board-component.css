@@ -1,0 +1,46 @@
+.header {
+    margin: auto;
+    width: 100%;
+    text-align: center;
+}
+
+.large-text {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.medium-text {
+    font-size: medium;
+}
+
+.score {
+    font-size: 2rem;
+}
+
+#board {
+  background: #fff;
+  border: 1px solid #efefef;
+  border-radius: 2px;
+  margin: auto;
+  text-align: center;
+  width: 50%;
+  margin-top: 5%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+p {
+  width: 10px;
+  height: 10px;
+  margin: 0px;
+  border: 1px solid #efefef;
+}
+
+.arrow-key {
+    background-color: blue;
+    color: cornsilk;
+    border-radius: 3px;
+    padding: 5px;
+    width: 65px;
+    cursor: pointer;
+}

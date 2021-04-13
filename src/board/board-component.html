@@ -1,0 +1,34 @@
+<div>
+  <div class="header">
+    <div class="large-text">Snake Game</div>
+    <div class="small-text">Built on <a href="https://creamie.io">creamie.io</a></div>
+    <div>
+        Score : <span data="score"></span>
+    </div>
+    <div>
+        <button e="click:reInit">Reset</button>
+    </div>
+  </div>
+  <div id="board">
+    <p loop="cells"></p>
+  </div>
+  <div class="header">
+    <table style="margin: auto;">
+        <tr>
+            <td></td>
+            <td e="click:up" class="arrow-key">UP</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td e="click:left" class="arrow-key">LEFT</td>
+            <td></td>
+            <td e="click:right" class="arrow-key">RIGHT</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td e="click:down" class="arrow-key">DOWN</td>
+            <td></td>
+        </tr>
+    </table>
+  </div>
+</div>
