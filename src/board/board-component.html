@@ -1,34 +1,24 @@
 <div>
-  <div class="header">
-    <div class="large-text">Snake Game</div>
-    <div class="small-text">Built on <a href="https://creamie.io">creamie.io</a></div>
-    <div>
-        Score : <span data="score"></span>
+  <div class="header grey-text">
+    <div class="large-text lobster">Snake</div>
+    <div class="medium-text">
+      Built on <a href="https://creamie.io" target="_blank">creamie.io</a>
     </div>
-    <div>
-        <button e="click:reInit">Reset</button>
+    <div class="medium-text">
+      Score : <span data="score"></span>
+      <button e="click:reInit" if="showPlay">Play</button>
     </div>
   </div>
   <div id="board">
     <p loop="cells"></p>
   </div>
-  <div class="header">
-    <table style="margin: auto;">
-        <tr>
-            <td></td>
-            <td e="click:up" class="arrow-key">UP</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td e="click:left" class="arrow-key">LEFT</td>
-            <td></td>
-            <td e="click:right" class="arrow-key">RIGHT</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td e="click:down" class="arrow-key">DOWN</td>
-            <td></td>
-        </tr>
-    </table>
+  <div class="keys">
+    <div e="click:up" class="key top"></div>
+    <br>
+    <div e="click:left" class="key left"></div>
+    <div e="click:down" class="key bottom"></div>
+    <div e="click:right" class="key right"></div>
   </div>
 </div>
+
+<div class="message" data="message"></div>

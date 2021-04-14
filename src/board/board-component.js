@@ -33,14 +33,29 @@ export default class Board extends Creamie {
 
   connectedCallback() {
     this.board = document.getElementById("board");
-    this.board.style.width = `${
-      BoardProps.WIDHT * 10 + 2 * BoardProps.WIDHT
-    }px`;
-    this.board.style.height = `${
-      BoardProps.HEIGHT * 10 + 2 * BoardProps.WIDHT
-    }px`;
     this.cells = this.board.children;
     this.init();
+    document.addEventListener("keydown", (e) => {
+      let inputDirection = null;
+      let isValidKey = true;
+      switch (e.key) {
+        case "ArrowLeft":
+          inputDirection = Direction.LEFT;
+          break;
+        case "ArrowUp":
+          inputDirection = Direction.TOP;
+          break;
+        case "ArrowRight":
+          inputDirection = Direction.RIGHT;
+          break;
+        case "ArrowDown":
+          inputDirection = Direction.BOTTOM;
+          break;
+        default:
+          isValidKey = false;
+      }
+      isValidKey && this.setDirection(inputDirection);
+    });
     this.events.init({
       reInit: () => {
         this.init();
@@ -62,8 +77,8 @@ export default class Board extends Creamie {
 
   play() {
     this.snakeRunInterval = setInterval(() => {
-      this.moveSnake();
-    }, 100);
+      this.moveSnake(this.currentDirection);
+    }, this.speed);
   }
 
   pause() {
@@ -71,6 +86,8 @@ export default class Board extends Creamie {
   }
 
   init() {
+    this.data.showPlay = false;
+    this.speed = 150;
     this.data.score = 0;
     let middleCell =
       (BoardProps.HEIGHT * BoardProps.WIDHT) / 2 + BoardProps.WIDHT / 2;
@@ -89,39 +106,19 @@ export default class Board extends Creamie {
     });
     this.loop.cells.setPreprocessor((data, index) => {
       if (this.cells[index]) {
+        this.cells[index].className = "";
         switch (data.type) {
-          case Type.SPACE:
-            this.cells[index].style.backgroundColor = "";
-            break;
           case Type.FOOD:
-            this.cells[index].style.backgroundColor = "chartreuse";
+            this.cells[index].classList.add("d-food-color");
             break;
           case Type.SNAKE:
-            this.cells[index].style.backgroundColor = "blue";
+            this.cells[index].classList.add("d-snake-color");
             break;
         }
       }
     });
     this.drawFood();
     this.drawSnake();
-    document.addEventListener("keydown", (e) => {
-      let inputDirection = null;
-      switch (e.key) {
-        case "ArrowLeft":
-          inputDirection = Direction.LEFT;
-          break;
-        case "ArrowUp":
-          inputDirection = Direction.TOP;
-          break;
-        case "ArrowRight":
-          inputDirection = Direction.RIGHT;
-          break;
-        case "ArrowDown":
-          inputDirection = Direction.BOTTOM;
-          break;
-      }
-      this.setDirection(inputDirection);
-    });
     this.play();
   }
 
@@ -167,9 +164,9 @@ export default class Board extends Creamie {
     }
   }
 
-  moveSnake() {
+  moveSnake(currentDirection) {
     let tempSnake = this.snakeHead;
-    let cellValue = tempSnake.data + this.currentDirection;
+    let cellValue = tempSnake.data + currentDirection;
     if (!this.isSnakeDead(cellValue)) {
       let prevData = tempSnake.data;
       this.snakeSet.add(prevData);
@@ -192,7 +189,11 @@ export default class Board extends Creamie {
         this.drawFood();
       }
     } else {
+      let endText = "Game Over!";
+      console.log(endText);
+      this.showMessage(endText);
       this.pause();
+      this.data.showPlay = true;
     }
   }
 
@@ -202,14 +203,15 @@ export default class Board extends Creamie {
     this.snakeSet.add(decidedCell);
     newHead.next = this.snakeHead;
     this.snakeHead = newHead;
+    this.speed--;
   }
 
   isSnakeDead(cellValue) {
     if (this.isSnakeReachedEnd(cellValue)) {
-      alert("Game Over! Snake crashed on wall");
+      console.log("Snake crashed on wall!");
       return true;
     } else if (this.snakeSet.has(cellValue)) {
-      alert("Game Over! Snake self-destructed");
+      console.log("Snake bites itself!");
       return true;
     }
     return false;
@@ -226,6 +228,17 @@ export default class Board extends Creamie {
       case Direction.RIGHT:
         return cellValue > this.boundaryValue.RIGHT;
     }
+    return false;
+  }
+
+  showMessage(text, color = "red-text") {
+    let message = document.querySelector(".message");
+    this.data.message = text;
+    message.classList.add(color);
+    message.style.display = "block";
+    setTimeout(() => {
+      message.style.display = "none";
+    }, 1000);
   }
 }
 window.customElements.define(BoardConfig.tag, Board);
