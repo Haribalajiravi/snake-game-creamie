@@ -100,7 +100,7 @@ export default class Board extends Creamie {
     };
     this.currentDirection = Direction.LEFT;
     this.snakeSet = new Set();
-    [...new Array(5)].forEach(() => this.growSnake());
+    [...new Array(5)].forEach(() => this.growSnake(Direction.LEFT));
     this.data.cells = new Array(BoardProps.WIDHT * BoardProps.HEIGHT).fill({
       type: Type.SPACE,
     });
@@ -130,9 +130,6 @@ export default class Board extends Creamie {
       };
       tempSnake = tempSnake.next;
     }
-    let row = Math.floor(this.snakeHead.data / BoardProps.WIDHT);
-    this.boundaryValue.LEFT = row * BoardProps.WIDHT;
-    this.boundaryValue.RIGHT = this.boundaryValue.LEFT + BoardProps.WIDHT - 1;
   }
 
   getRandomFoodCell() {
@@ -167,7 +164,7 @@ export default class Board extends Creamie {
   moveSnake(currentDirection) {
     let tempSnake = this.snakeHead;
     let cellValue = tempSnake.data + currentDirection;
-    if (!this.isSnakeDead(cellValue)) {
+    if (!this.isSnakeDead(cellValue, currentDirection)) {
       let prevData = tempSnake.data;
       this.snakeSet.add(prevData);
       tempSnake.data = cellValue;
@@ -185,7 +182,7 @@ export default class Board extends Creamie {
       this.drawSnake();
       if (cellValue == this.currentFoodCell) {
         this.data.score = this.data.score + 1;
-        this.growSnake();
+        this.growSnake(currentDirection);
         this.drawFood();
       }
     } else {
@@ -195,10 +192,13 @@ export default class Board extends Creamie {
       this.pause();
       this.data.showPlay = true;
     }
+    let row = Math.floor(this.snakeHead.data / BoardProps.WIDHT);
+    this.boundaryValue.LEFT = row * BoardProps.WIDHT;
+    this.boundaryValue.RIGHT = this.boundaryValue.LEFT + BoardProps.WIDHT - 1;
   }
 
-  growSnake() {
-    let decidedCell = this.snakeHead.data + this.currentDirection;
+  growSnake(currentDirection) {
+    let decidedCell = this.snakeHead.data + currentDirection;
     let newHead = new Node(decidedCell);
     this.snakeSet.add(decidedCell);
     newHead.next = this.snakeHead;
@@ -206,8 +206,8 @@ export default class Board extends Creamie {
     this.speed--;
   }
 
-  isSnakeDead(cellValue) {
-    if (this.isSnakeReachedEnd(cellValue)) {
+  isSnakeDead(cellValue, currentDirection) {
+    if (this.isSnakeReachedEnd(cellValue, currentDirection)) {
       console.log("Snake crashed on wall!");
       return true;
     } else if (this.snakeSet.has(cellValue)) {
@@ -217,8 +217,8 @@ export default class Board extends Creamie {
     return false;
   }
 
-  isSnakeReachedEnd(cellValue) {
-    switch (this.currentDirection) {
+  isSnakeReachedEnd(cellValue, currentDirection) {
+    switch (currentDirection) {
       case Direction.TOP:
         return cellValue < this.boundaryValue.TOP;
       case Direction.BOTTOM:

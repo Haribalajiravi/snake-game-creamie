@@ -2,9 +2,6 @@
   <div class="header grey-text">
     <div class="large-text lobster">Snake</div>
     <div class="medium-text">
-      Built on <a href="https://creamie.io" target="_blank">creamie.io</a>
-    </div>
-    <div class="medium-text">
       Score : <span data="score"></span>
       <button e="click:reInit" if="showPlay">Play</button>
     </div>
@@ -12,12 +9,23 @@
   <div id="board">
     <p loop="cells"></p>
   </div>
-  <div class="keys">
-    <div e="click:up" class="key top"></div>
-    <br>
-    <div e="click:left" class="key left"></div>
-    <div e="click:down" class="key bottom"></div>
-    <div e="click:right" class="key right"></div>
+  <div class="footer">
+    <div id="keys">
+      <div e="click:up" class="key top"></div>
+      <br />
+      <div e="click:left" class="key left"></div>
+      <div e="click:down" class="key bottom"></div>
+      <div e="click:right" class="key right"></div>
+    </div>
+    <div class="grey-text copyright">
+      <div>
+        Copyright © 2021
+        <a href="https://www.instagram.com/haribalajiravi/" target="_blank">Haribalaji Ravi</a>
+      </div>
+      <div>
+        Built with <a href="https://creamie.io" target="_blank">creamie.io</a>
+      </div>
+    </div>
   </div>
 </div>
 
