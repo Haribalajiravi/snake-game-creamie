@@ -85,10 +85,16 @@ export default class Board extends Creamie {
     clearInterval(this.snakeRunInterval);
   }
 
+  soundHorn(type) {
+    var audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
+    audio.play();
+  }
+
   init() {
     this.data.showPlay = false;
     this.speed = 150;
     this.data.score = 0;
+    this.board.setAttribute("snake-theme", "base");
     let middleCell =
       (BoardProps.HEIGHT * BoardProps.WIDHT) / 2 + BoardProps.WIDHT / 2;
     this.snakeHead = new Node(middleCell);
@@ -186,6 +192,7 @@ export default class Board extends Creamie {
         this.drawFood();
       }
     } else {
+      this.board.setAttribute("snake-theme", "blink");
       let endText = "Game Over!";
       console.log(endText);
       this.showMessage(endText);

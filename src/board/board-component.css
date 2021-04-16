@@ -43,7 +43,7 @@ p {
 }
 
 #keys {
-    display: none;
+  display: none;
 }
 
 @media only screen and (max-width: 600px) {
@@ -67,7 +67,7 @@ p {
   }
 
   #keys {
-      display: block;
+    display: block;
   }
 }
 
@@ -174,4 +174,19 @@ p {
   background-color: #4e4e4e;
   padding: 10px;
   margin: 10px 0px 0px 0px;
+}
+
+/* Snake blink*/
+
+@keyframes blinking {
+  0% {
+    background-color: red;
+  }
+  100% {
+    background-color: #cecece;
+  }
+}
+
+[snake-theme="blink"] .d-snake-color  {
+  animation: blinking 1s infinite;
 }
