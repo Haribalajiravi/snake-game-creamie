@@ -26,9 +26,23 @@ class Node {
   }
 }
 
+const SOUND_DOMAIN = "https://gamesounds.xyz";
+const Sounds = {
+  SNAKE_CRASH: `${SOUND_DOMAIN}/99Sounds/The%20Weird%20Side%20Samples%20%2899Sounds%29/Tech/Tech-07.wav`,
+  SNAKE_EAT: `${SOUND_DOMAIN}/99Sounds/The%20Weird%20Side%20Samples%20%2899Sounds%29/Tech/Tech-13.wav`,
+};
+
 export default class Board extends Creamie {
   constructor() {
     super(BoardConfig);
+    /* Preload sound */
+    this.sounds = {};
+    Object.keys(Sounds).forEach((soundKey) => {
+      let aud = new Audio(Sounds[soundKey]);
+      aud.preload = "auto";
+      this.sounds[soundKey] = aud;
+    });
+    this.directionQ = [];
   }
 
   connectedCallback() {
@@ -77,17 +91,13 @@ export default class Board extends Creamie {
 
   play() {
     this.snakeRunInterval = setInterval(() => {
-      this.moveSnake(this.currentDirection);
+      let front = this.directionQ.shift();
+      this.moveSnake(front ? front : this.currentDirection);
     }, this.speed);
   }
 
   pause() {
     clearInterval(this.snakeRunInterval);
-  }
-
-  soundHorn(type) {
-    var audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
-    audio.play();
   }
 
   init() {
@@ -164,6 +174,7 @@ export default class Board extends Creamie {
         inputDirection != Direction.TOP)
     ) {
       this.currentDirection = inputDirection;
+      this.directionQ.push(this.currentDirection);
     }
   }
 
@@ -190,8 +201,10 @@ export default class Board extends Creamie {
         this.data.score = this.data.score + 1;
         this.growSnake(currentDirection);
         this.drawFood();
+        this.sounds.SNAKE_EAT.play();
       }
     } else {
+      this.sounds.SNAKE_CRASH.play();
       this.board.setAttribute("snake-theme", "blink");
       let endText = "Game Over!";
       console.log(endText);
