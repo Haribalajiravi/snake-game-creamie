@@ -42,7 +42,6 @@ export default class Board extends Creamie {
       aud.preload = "auto";
       this.sounds[soundKey] = aud;
     });
-    this.directionQ = [];
   }
 
   connectedCallback() {
@@ -104,6 +103,7 @@ export default class Board extends Creamie {
     this.data.showPlay = false;
     this.speed = 150;
     this.data.score = 0;
+    this.directionQ = [];
     this.board.setAttribute("snake-theme", "base");
     let middleCell =
       (BoardProps.HEIGHT * BoardProps.WIDHT) / 2 + BoardProps.WIDHT / 2;
