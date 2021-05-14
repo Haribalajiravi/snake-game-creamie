@@ -1,5 +1,11 @@
-import Creamie from "@creamie/core";
-import BoardConfig from "./board-config";
+/* eslint-disable max-classes-per-file */
+/**
+ * @author Haribalaji Ravi
+ * @copyright 2021
+ * License: MIT
+ */
+import Creamie from '@creamie/core';
+import BoardConfig from './board-config';
 
 const Type = {
   SPACE: 0,
@@ -41,7 +47,7 @@ class Node {
   }
 }
 
-const SOUND_DOMAIN = "https://gamesounds.xyz";
+const SOUND_DOMAIN = 'https://gamesounds.xyz';
 const Sounds = {
   SNAKE_CRASH: `${SOUND_DOMAIN}/99Sounds/The%20Weird%20Side%20Samples%20%2899Sounds%29/Tech/Tech-07.wav`,
   SNAKE_EAT: `${SOUND_DOMAIN}/99Sounds/The%20Weird%20Side%20Samples%20%2899Sounds%29/Tech/Tech-13.wav`,
@@ -53,36 +59,38 @@ export default class Board extends Creamie {
     /* Preload sound */
     this.sounds = {};
     Object.keys(Sounds).forEach((soundKey) => {
-      let aud = new Audio(Sounds[soundKey]);
-      aud.preload = "auto";
+      const aud = new Audio(Sounds[soundKey]);
+      aud.preload = 'auto';
       this.sounds[soundKey] = aud;
     });
   }
 
   connectedCallback() {
-    this.board = document.getElementById("board");
+    this.board = document.getElementById('board');
     this.cells = this.board.children;
     this.init();
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener('keydown', (e) => {
       let inputDirection = null;
       let isValidKey = true;
       switch (e.key) {
-        case "ArrowLeft":
+        case 'ArrowLeft':
           inputDirection = Direction.LEFT;
           break;
-        case "ArrowUp":
+        case 'ArrowUp':
           inputDirection = Direction.TOP;
           break;
-        case "ArrowRight":
+        case 'ArrowRight':
           inputDirection = Direction.RIGHT;
           break;
-        case "ArrowDown":
+        case 'ArrowDown':
           inputDirection = Direction.BOTTOM;
           break;
         default:
           isValidKey = false;
       }
-      isValidKey && this.setDirection(inputDirection);
+      if (isValidKey) {
+        this.setDirection(inputDirection);
+      }
     });
     this.events.init({
       reInit: () => {
@@ -100,13 +108,16 @@ export default class Board extends Creamie {
       down: () => {
         this.setDirection(Direction.BOTTOM);
       },
+      close: () => {
+        document.getElementById('gads').style.display = 'none';
+      },
     });
   }
 
   play() {
     this.snakeRunInterval = setInterval(() => {
-      let front = this.directionQ.shift();
-      this.moveSnake(front ? front : this.currentDirection);
+      const front = this.directionQ.shift();
+      this.moveSnake(front || this.currentDirection);
     }, this.speed);
   }
 
@@ -119,9 +130,9 @@ export default class Board extends Creamie {
     this.speed = 150;
     this.data.score = 0;
     this.directionQ = [];
-    this.board.setAttribute("snake-theme", "base");
-    let middleCell =
-      (BoardProps.HEIGHT * BoardProps.WIDHT) / 2 + BoardProps.WIDHT / 2;
+    this.board.setAttribute('snake-theme', 'base');
+    const middleCell = (BoardProps.HEIGHT * BoardProps.WIDHT) / 2
+      + BoardProps.WIDHT / 2;
     this.snakeHead = new Node(middleCell);
     this.boundaryValue = {
       LEFT: 0,
@@ -132,28 +143,33 @@ export default class Board extends Creamie {
     this.currentDirection = Direction.LEFT;
     this.snakeSet = new Set();
     [...new Array(5)].forEach(() => this.growSnake(Direction.LEFT));
-    this.data.cells = new Array(BoardProps.WIDHT * BoardProps.HEIGHT).fill({
+    this.data.cells = new Array(
+      BoardProps.WIDHT * BoardProps.HEIGHT,
+    ).fill({
       type: Type.SPACE,
     });
     this.loop.cells.setPreprocessor((data, index) => {
       if (this.cells[index]) {
-        this.cells[index].className = "";
+        this.cells[index].className = '';
         switch (data.type) {
           case Type.FOOD:
-            this.cells[index].classList.add("d-food-color");
+            this.cells[index].classList.add('d-food-color');
             break;
           case Type.SNAKE:
-            this.cells[index].classList.add("d-snake-color");
+            this.cells[index].classList.add('d-snake-color');
             break;
           case Type.FOOD_REV:
-            this.cells[index].classList.add("d-rev-food-color");
+            this.cells[index].classList.add('d-rev-food-color');
             break;
+          default:
+            this.cells[index].className = '';
         }
       }
     });
     this.drawFood();
     this.drawSnake();
     this.play();
+    document.getElementById('gads').style.display = 'none';
   }
 
   drawSnake() {
@@ -168,7 +184,7 @@ export default class Board extends Creamie {
 
   getRandomFoodCell() {
     this.currentFoodCell = Math.ceil(
-      Math.random() * (BoardProps.WIDHT * BoardProps.HEIGHT)
+      Math.random() * (BoardProps.WIDHT * BoardProps.HEIGHT),
     );
     return this.foodInSnake(this.currentFoodCell)
       ? this.getRandomFoodCell()
@@ -179,10 +195,12 @@ export default class Board extends Creamie {
     return this.snakeSet.has(foodCell);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getFoodType() {
     const randPercentage = Math.random() * 100;
-    const match = Food.find((food) => randPercentage <= food.percentage);
-    console.log(randPercentage, match);
+    const match = Food.find(
+      (food) => randPercentage <= food.percentage,
+    );
     return match ? match.type : Food[0].type;
   }
 
@@ -195,21 +213,22 @@ export default class Board extends Creamie {
 
   setDirection(inputDirection, reversed = false) {
     if (
-      (this.currentDirection == Direction.LEFT &&
-        inputDirection != Direction.RIGHT) ||
-      (this.currentDirection == Direction.RIGHT &&
-        inputDirection != Direction.LEFT) ||
-      (this.currentDirection == Direction.TOP &&
-        inputDirection != Direction.BOTTOM) ||
-      (this.currentDirection == Direction.BOTTOM &&
-        inputDirection != Direction.TOP) ||
-      reversed
+      (this.currentDirection === Direction.LEFT
+        && inputDirection !== Direction.RIGHT)
+      || (this.currentDirection === Direction.RIGHT
+        && inputDirection !== Direction.LEFT)
+      || (this.currentDirection === Direction.TOP
+        && inputDirection !== Direction.BOTTOM)
+      || (this.currentDirection === Direction.BOTTOM
+        && inputDirection !== Direction.TOP)
+      || reversed
     ) {
       this.currentDirection = inputDirection;
       this.directionQ.push(this.currentDirection);
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getOppositeDirection(currentDirection) {
     switch (currentDirection) {
       case Direction.LEFT:
@@ -220,19 +239,21 @@ export default class Board extends Creamie {
         return Direction.BOTTOM;
       case Direction.BOTTOM:
         return Direction.TOP;
+      default:
+        return 0;
     }
   }
 
   moveSnake(currentDirection) {
     let tempSnake = this.snakeHead;
-    let cellValue = tempSnake.data + currentDirection;
+    const cellValue = tempSnake.data + currentDirection;
     if (!this.isSnakeDead(cellValue, currentDirection)) {
       let prevData = tempSnake.data;
       this.snakeSet.add(prevData);
       tempSnake.data = cellValue;
       tempSnake = tempSnake.next;
       while (tempSnake != null) {
-        let tempData = tempSnake.data;
+        const tempData = tempSnake.data;
         tempSnake.data = prevData;
         prevData = tempData;
         tempSnake = tempSnake.next;
@@ -242,10 +263,10 @@ export default class Board extends Creamie {
         type: Type.SPACE,
       };
       this.drawSnake();
-      if (cellValue == this.currentFoodCell) {
-        this.data.score = this.data.score + 1;
+      if (cellValue === this.currentFoodCell) {
+        this.data.score += 1;
         this.growSnake(currentDirection);
-        if (this.currentFoodType == Type.FOOD_REV) {
+        if (this.currentFoodType === Type.FOOD_REV) {
           this.reverseSnake();
         }
         this.drawFood();
@@ -253,33 +274,38 @@ export default class Board extends Creamie {
       }
     } else {
       this.sounds.SNAKE_CRASH.play();
-      this.board.setAttribute("snake-theme", "blink");
-      let endText = "Game Over!";
+      this.board.setAttribute('snake-theme', 'blink');
+      const endText = 'Game Over!';
+      // eslint-disable-next-line no-console
       console.log(endText);
       this.showMessage(endText);
+      document.getElementById('gads').style.display = 'block';
       this.pause();
       this.data.showPlay = true;
     }
-    let row = Math.floor(this.snakeHead.data / BoardProps.WIDHT);
+    const row = Math.floor(this.snakeHead.data / BoardProps.WIDHT);
     this.boundaryValue.LEFT = row * BoardProps.WIDHT;
     this.boundaryValue.RIGHT = this.boundaryValue.LEFT + BoardProps.WIDHT - 1;
   }
 
   growSnake(currentDirection) {
-    let decidedCell = this.snakeHead.data + currentDirection;
-    let newHead = new Node(decidedCell);
+    const decidedCell = this.snakeHead.data + currentDirection;
+    const newHead = new Node(decidedCell);
     this.snakeSet.add(decidedCell);
     newHead.next = this.snakeHead;
     this.snakeHead = newHead;
-    this.speed--;
+    this.speed -= 1;
   }
 
   isSnakeDead(cellValue, currentDirection) {
     if (this.isSnakeReachedEnd(cellValue, currentDirection)) {
-      console.log("Snake crashed on wall!");
+      // eslint-disable-next-line no-console
+      console.log('Snake crashed on wall!');
       return true;
-    } else if (this.snakeSet.has(cellValue)) {
-      console.log("Snake bites itself!");
+    }
+    if (this.snakeSet.has(cellValue)) {
+      // eslint-disable-next-line no-console
+      console.log('Snake bites itself!');
       return true;
     }
     return false;
@@ -289,15 +315,16 @@ export default class Board extends Creamie {
     let currPart = this.snakeHead;
     let prevPart = null;
     while (currPart != null) {
-      let nextPart = currPart.next;
+      const nextPart = currPart.next;
       currPart.next = prevPart;
       prevPart = currPart;
       currPart = nextPart;
     }
     this.snakeHead = prevPart;
-    const opp = this.getOppositeDirection(this.currentDirection);
-    console.log("REV", opp);
-    this.setDirection(opp, true);
+    this.setDirection(
+      this.snakeHead.data - this.snakeHead.next.data,
+      true,
+    );
   }
 
   isSnakeReachedEnd(cellValue, currentDirection) {
@@ -310,17 +337,18 @@ export default class Board extends Creamie {
         return cellValue < this.boundaryValue.LEFT;
       case Direction.RIGHT:
         return cellValue > this.boundaryValue.RIGHT;
+      default:
+        return false;
     }
-    return false;
   }
 
-  showMessage(text, color = "red-text") {
-    let message = document.querySelector(".message");
+  showMessage(text, color = 'red-text') {
+    const message = document.querySelector('.message');
     this.data.message = text;
     message.classList.add(color);
-    message.style.display = "block";
+    message.style.display = 'block';
     setTimeout(() => {
-      message.style.display = "none";
+      message.style.display = 'none';
     }, 1000);
   }
 }

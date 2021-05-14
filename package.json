@@ -5,26 +5,30 @@
   "scripts": {
     "build": "creamie-watch -i && webpack --mode=development",
     "development": "webpack-dev-server",
-    "start": "creamie-watch -i && webpack --mode=production && pm2 start"
+    "start": "creamie-watch -i && webpack --mode=production && pm2 start",
+    "lint": "eslint"
   },
   "dependencies": {
     "@creamie/core": "latest",
     "pm2": "latest"
   },
   "devDependencies": {
-    "@creamie/watcher": "latest",
-    "express": "^4.17.1",
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
+    "@creamie/watcher": "latest",
     "babel-loader": "^8.0.6",
-    "node-watch": "^0.6.3",
     "copy-webpack-plugin": "^5.0.5",
     "css-loader": "^3.2.0",
+    "eslint": "^7.26.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.0",
+    "express": "^4.17.1",
     "file-loader": "^4.2.0",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.13.0",
+    "node-watch": "^0.6.3",
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.0",
     "url-loader": "^2.2.0",
