@@ -92,6 +92,10 @@ p {
   background-color: chartreuse;
 }
 
+.d-rev-food-color {
+  background-color: blueviolet;
+}
+
 .footer {
   margin: auto;
   text-align: center;

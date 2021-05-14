@@ -4,8 +4,23 @@ import BoardConfig from "./board-config";
 const Type = {
   SPACE: 0,
   FOOD: 1,
+  FOOD_REV: -1,
   SNAKE: 2,
 };
+
+/**
+ * Food probability percentage (should be asc order)
+ */
+const Food = [
+  {
+    type: Type.FOOD,
+    percentage: 70,
+  },
+  {
+    type: Type.FOOD_REV,
+    percentage: 30,
+  },
+].sort((a, b) => a.percentage - b.percentage);
 
 const BoardProps = {
   WIDHT: 60,
@@ -130,6 +145,9 @@ export default class Board extends Creamie {
           case Type.SNAKE:
             this.cells[index].classList.add("d-snake-color");
             break;
+          case Type.FOOD_REV:
+            this.cells[index].classList.add("d-rev-food-color");
+            break;
         }
       }
     });
@@ -152,17 +170,30 @@ export default class Board extends Creamie {
     this.currentFoodCell = Math.ceil(
       Math.random() * (BoardProps.WIDHT * BoardProps.HEIGHT)
     );
-    console.log(this.currentFoodCell);
-    return this.currentFoodCell;
+    return this.foodInSnake(this.currentFoodCell)
+      ? this.getRandomFoodCell()
+      : this.currentFoodCell;
+  }
+
+  foodInSnake(foodCell) {
+    return this.snakeSet.has(foodCell);
+  }
+
+  getFoodType() {
+    const randPercentage = Math.random() * 100;
+    const match = Food.find((food) => randPercentage <= food.percentage);
+    console.log(randPercentage, match);
+    return match ? match.type : Food[0].type;
   }
 
   drawFood() {
+    this.currentFoodType = this.getFoodType();
     this.data.cells[this.getRandomFoodCell()] = {
-      type: Type.FOOD,
+      type: this.currentFoodType,
     };
   }
 
-  setDirection(inputDirection) {
+  setDirection(inputDirection, reversed = false) {
     if (
       (this.currentDirection == Direction.LEFT &&
         inputDirection != Direction.RIGHT) ||
@@ -171,10 +202,24 @@ export default class Board extends Creamie {
       (this.currentDirection == Direction.TOP &&
         inputDirection != Direction.BOTTOM) ||
       (this.currentDirection == Direction.BOTTOM &&
-        inputDirection != Direction.TOP)
+        inputDirection != Direction.TOP) ||
+      reversed
     ) {
       this.currentDirection = inputDirection;
       this.directionQ.push(this.currentDirection);
+    }
+  }
+
+  getOppositeDirection(currentDirection) {
+    switch (currentDirection) {
+      case Direction.LEFT:
+        return Direction.RIGHT;
+      case Direction.RIGHT:
+        return Direction.LEFT;
+      case Direction.TOP:
+        return Direction.BOTTOM;
+      case Direction.BOTTOM:
+        return Direction.TOP;
     }
   }
 
@@ -200,6 +245,9 @@ export default class Board extends Creamie {
       if (cellValue == this.currentFoodCell) {
         this.data.score = this.data.score + 1;
         this.growSnake(currentDirection);
+        if (this.currentFoodType == Type.FOOD_REV) {
+          this.reverseSnake();
+        }
         this.drawFood();
         this.sounds.SNAKE_EAT.play();
       }
@@ -235,6 +283,21 @@ export default class Board extends Creamie {
       return true;
     }
     return false;
+  }
+
+  reverseSnake() {
+    let currPart = this.snakeHead;
+    let prevPart = null;
+    while (currPart != null) {
+      let nextPart = currPart.next;
+      currPart.next = prevPart;
+      prevPart = currPart;
+      currPart = nextPart;
+    }
+    this.snakeHead = prevPart;
+    const opp = this.getOppositeDirection(this.currentDirection);
+    console.log("REV", opp);
+    this.setDirection(opp, true);
   }
 
   isSnakeReachedEnd(cellValue, currentDirection) {
