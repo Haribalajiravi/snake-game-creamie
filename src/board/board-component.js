@@ -108,9 +108,6 @@ export default class Board extends Creamie {
       down: () => {
         this.setDirection(Direction.BOTTOM);
       },
-      close: () => {
-        document.getElementById('gads').style.display = 'none';
-      },
     });
   }
 
@@ -169,7 +166,6 @@ export default class Board extends Creamie {
     this.drawFood();
     this.drawSnake();
     this.play();
-    document.getElementById('gads').style.display = 'none';
   }
 
   drawSnake() {
@@ -279,7 +275,6 @@ export default class Board extends Creamie {
       // eslint-disable-next-line no-console
       console.log(endText);
       this.showMessage(endText);
-      document.getElementById('gads').style.display = 'block';
       this.pause();
       this.data.showPlay = true;
     }
