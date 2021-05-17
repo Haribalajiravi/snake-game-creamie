@@ -108,6 +108,9 @@ export default class Board extends Creamie {
       down: () => {
         this.setDirection(Direction.BOTTOM);
       },
+      close: () => {
+        document.getElementById('gads').style.display = 'none';
+      },
     });
   }
 
@@ -128,9 +131,8 @@ export default class Board extends Creamie {
     this.data.score = 0;
     this.directionQ = [];
     this.board.setAttribute('snake-theme', 'base');
-    const middleCell =
-      (BoardProps.HEIGHT * BoardProps.WIDHT) / 2 +
-      BoardProps.WIDHT / 2;
+    const middleCell = (BoardProps.HEIGHT * BoardProps.WIDHT) / 2
+      + BoardProps.WIDHT / 2;
     this.snakeHead = new Node(middleCell);
     this.boundaryValue = {
       LEFT: 0,
@@ -142,7 +144,7 @@ export default class Board extends Creamie {
     this.snakeSet = new Set();
     [...new Array(5)].forEach(() => this.growSnake(Direction.LEFT));
     this.data.cells = new Array(
-      BoardProps.WIDHT * BoardProps.HEIGHT
+      BoardProps.WIDHT * BoardProps.HEIGHT,
     ).fill({
       type: Type.SPACE,
     });
@@ -167,6 +169,7 @@ export default class Board extends Creamie {
     this.drawFood();
     this.drawSnake();
     this.play();
+    document.getElementById('gads').style.display = 'none';
   }
 
   drawSnake() {
@@ -181,7 +184,7 @@ export default class Board extends Creamie {
 
   getRandomFoodCell() {
     this.currentFoodCell = Math.ceil(
-      Math.random() * (BoardProps.WIDHT * BoardProps.HEIGHT)
+      Math.random() * (BoardProps.WIDHT * BoardProps.HEIGHT),
     );
     return this.foodInSnake(this.currentFoodCell)
       ? this.getRandomFoodCell()
@@ -196,7 +199,7 @@ export default class Board extends Creamie {
   getFoodType() {
     const randPercentage = Math.random() * 100;
     const match = Food.find(
-      (food) => randPercentage <= food.percentage
+      (food) => randPercentage <= food.percentage,
     );
     return match ? match.type : Food[0].type;
   }
@@ -210,15 +213,15 @@ export default class Board extends Creamie {
 
   setDirection(inputDirection, reversed = false) {
     if (
-      (this.currentDirection === Direction.LEFT &&
-        inputDirection !== Direction.RIGHT) ||
-      (this.currentDirection === Direction.RIGHT &&
-        inputDirection !== Direction.LEFT) ||
-      (this.currentDirection === Direction.TOP &&
-        inputDirection !== Direction.BOTTOM) ||
-      (this.currentDirection === Direction.BOTTOM &&
-        inputDirection !== Direction.TOP) ||
-      reversed
+      (this.currentDirection === Direction.LEFT
+        && inputDirection !== Direction.RIGHT)
+      || (this.currentDirection === Direction.RIGHT
+        && inputDirection !== Direction.LEFT)
+      || (this.currentDirection === Direction.TOP
+        && inputDirection !== Direction.BOTTOM)
+      || (this.currentDirection === Direction.BOTTOM
+        && inputDirection !== Direction.TOP)
+      || reversed
     ) {
       this.currentDirection = inputDirection;
       this.directionQ.push(this.currentDirection);
@@ -276,13 +279,13 @@ export default class Board extends Creamie {
       // eslint-disable-next-line no-console
       console.log(endText);
       this.showMessage(endText);
+      document.getElementById('gads').style.display = 'block';
       this.pause();
       this.data.showPlay = true;
     }
     const row = Math.floor(this.snakeHead.data / BoardProps.WIDHT);
     this.boundaryValue.LEFT = row * BoardProps.WIDHT;
-    this.boundaryValue.RIGHT =
-      this.boundaryValue.LEFT + BoardProps.WIDHT - 1;
+    this.boundaryValue.RIGHT = this.boundaryValue.LEFT + BoardProps.WIDHT - 1;
   }
 
   growSnake(currentDirection) {
@@ -320,7 +323,7 @@ export default class Board extends Creamie {
     this.snakeHead = prevPart;
     this.setDirection(
       this.snakeHead.data - this.snakeHead.next.data,
-      true
+      true,
     );
   }
 
