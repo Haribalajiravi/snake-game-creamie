@@ -1,6 +1,6 @@
 # Snake game 
-Made with love using [creamie.io](https://creamie.io) 
-#### [Visit](https://snake.creamie.io) for demo
+Made with love using [creamie.vercel.app](https://creamie.vercel.app) 
+#### [Visit](https://snake-creamie.vercel.app) for demo
 
 Run project: [http://localhost:8080](http://localhost:8080)
 ```
